@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return StreamProvider(
             create: (_) => FirestoreService().streamReport(),
+            catchError: (_, err) => Report(),
             initialData: Report(),
             child: MaterialApp(
               debugShowCheckedModeBanner: true,
