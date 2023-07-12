@@ -1,4 +1,5 @@
 import 'package:fireship/services/models.dart';
+import 'package:fireship/shared/progress_bar.dart';
 import 'package:fireship/topics/drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,10 @@ class TopicItem extends StatelessWidget {
                     softWrap: false,
                   ),
                 ),
-              )
+              ),
+              Flexible(
+                child: TopicProgress(topic: topic),
+              ),
             ],
           ),
         ),

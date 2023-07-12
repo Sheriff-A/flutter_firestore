@@ -1,22 +1,29 @@
+import 'package:fireship/services/models.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fireship/services/models.dart';
 
-class AnimatedProgressbar extends StatelessWidget {
+class AnimatedProgressBar extends StatelessWidget {
+  const AnimatedProgressBar({
+    super.key,
+    required this.value,
+    required this.height,
+  });
+
+  // Percentage Value (0.0 - 1.0)
   final double value;
   final double height;
-
-  const AnimatedProgressbar({super.key, required this.value, this.height = 12});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints box) {
         return Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10.0),
           width: box.maxWidth,
           child: Stack(
             children: [
+              // First Element, Progress Bar Base
+              // Grey Background
               Container(
                 height: height,
                 decoration: BoxDecoration(
@@ -26,18 +33,21 @@ class AnimatedProgressbar extends StatelessWidget {
                   ),
                 ),
               ),
+
+              // Second Element, Progress Bar
+              // Animated Progress Bar
               AnimatedContainer(
                 duration: const Duration(milliseconds: 800),
                 curve: Curves.easeOutCubic,
                 height: height,
                 width: box.maxWidth * _floor(value),
                 decoration: BoxDecoration(
-                  color: _colorGen(value),
+                  color: _colorGenerator(value),
                   borderRadius: BorderRadius.all(
                     Radius.circular(height),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         );
@@ -45,14 +55,15 @@ class AnimatedProgressbar extends StatelessWidget {
     );
   }
 
-  /// Always round negative or NaNs to min value
+  // Always Round negative or NaN values to min value
   _floor(double value, [min = 0.0]) {
     return value.sign <= min ? min : value;
   }
 
-  _colorGen(double value) {
-    int rbg = (value * 255).toInt();
-    return Colors.deepOrange.withGreen(rbg).withRed(255 - rbg);
+  // Color Generator
+  _colorGenerator(double value) {
+    int rgb = (value * 255).toInt();
+    return Colors.deepOrange.withGreen(rgb).withRed(255 - rgb);
   }
 }
 
@@ -64,12 +75,15 @@ class TopicProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Report report = Provider.of<Report>(context);
+
     return Row(
       children: [
         _progressCount(report, topic),
         Expanded(
-          child: AnimatedProgressbar(
-              value: _calculateProgress(topic, report), height: 8),
+          child: AnimatedProgressBar(
+            value: _calculateProgress(topic, report),
+            height: 8,
+          ),
         ),
       ],
     );
@@ -88,9 +102,9 @@ class TopicProgress extends StatelessWidget {
   double _calculateProgress(Topic topic, Report report) {
     try {
       int totalQuizzes = topic.quizzes.length;
-      int completedQuizzes = report.topics[topic.id].length;
+      int completedQuizzes = report.topics[topic.id]?.length ?? 0;
       return completedQuizzes / totalQuizzes;
-    } catch (err) {
+    } catch (e) {
       return 0.0;
     }
   }
