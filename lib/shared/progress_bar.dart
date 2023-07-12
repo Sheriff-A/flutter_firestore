@@ -6,7 +6,7 @@ class AnimatedProgressBar extends StatelessWidget {
   const AnimatedProgressBar({
     super.key,
     required this.value,
-    required this.height,
+    this.height = 12,
   });
 
   // Percentage Value (0.0 - 1.0)
